@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f5edda">
+<title>平行人生販賣機｜另一種人生，正在等待領取</title>
+<style>
+:root{
+  --cream:#f5edda;--paper:#fff9eb;--orange:#d85b3f;--orange-dark:#a83f2d;
+  --green:#294b3c;--green2:#456451;--ink:#29382f;--muted:#827b68;
+  --yellow:#e8bd68;--line:#d8cbb0;--shadow:rgba(62,49,31,.14);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--cream);color:var(--ink);
+  font-family:"Trebuchet MS","Noto Sans TC","Microsoft JhengHei",sans-serif;
+  min-height:100vh;overflow-x:hidden;
+}
+body:before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.16;z-index:0;
+  background-image:radial-gradient(#927e5e .65px,transparent .65px);background-size:7px 7px;
+}
+button{font:inherit;cursor:pointer}
+button:focus-visible{outline:3px solid var(--yellow);outline-offset:4px}
+.page{position:relative;z-index:1;max-width:1120px;margin:auto;padding:26px 34px 54px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;border-bottom:1px solid var(--line);padding-bottom:15px}
+.brand{font-size:13px;letter-spacing:.18em;font-weight:900;color:var(--green)}
+.top-actions{display:flex;align-items:center;gap:10px}
+.sound-toggle,.text-button{
+  border:1px solid var(--green);background:transparent;color:var(--green);
+  border-radius:99px;padding:9px 14px;font-size:12px;font-weight:800;
+}
+.sound-toggle[aria-pressed="true"]{background:var(--green);color:var(--paper)}
+main{padding-top:28px}
+.hero{text-align:center;margin:24px auto 28px}
+.eyebrow{font-size:11px;letter-spacing:.28em;color:var(--orange);font-weight:900}
+h1{font-family:Georgia,"Noto Serif TC",serif;font-size:clamp(38px,7vw,68px);line-height:1.08;letter-spacing:.05em;margin:12px 0 8px;color:var(--green)}
+.subtitle{font-family:Georgia,"Noto Serif TC",serif;font-size:15px;color:var(--muted);letter-spacing:.12em}
+.hero-note{font-size:13px;line-height:1.9;color:#6d6a59;margin:18px auto 0;max-width:520px}
+.screen{display:none;animation:fadeIn .45s ease both}.screen.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.section-heading{text-align:center;margin:24px 0 22px}
+.section-heading h2{font-family:Georgia,"Noto Serif TC",serif;color:var(--green);font-size:26px;margin:0 0 8px}
+.section-heading p{font-size:13px;color:var(--muted);margin:0}
+.path-options{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:850px;margin:0 auto}
+.path-option{
+  position:relative;text-align:left;border:0;background:transparent;color:var(--ink);
+  padding:0;transition:transform .2s ease;min-width:0;
+}
+.path-option:hover{transform:translateY(-5px)}
+.path-art{
+  height:172px;background:var(--paper);border:1px solid var(--line);border-radius:48% 48% 12px 12px;
+  display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;
+}
+.path-art:after{content:"";position:absolute;width:160px;height:160px;border:1px dashed #cdbf9f;border-radius:50%}
+.path-art svg{width:116px;height:116px;position:relative;z-index:1}
+.path-name{display:block;font-family:Georgia,"Noto Serif TC",serif;font-size:20px;color:var(--green);margin:13px 4px 4px}
+.path-desc{display:block;font-size:12px;color:var(--muted);line-height:1.7;margin:0 4px}
+.path-number{position:absolute;right:13px;top:12px;font-size:11px;color:var(--orange);letter-spacing:.12em}
+.path-option.selected .path-art{outline:3px solid var(--orange);outline-offset:3px}
+.path-option.selected .path-name:after{content:"　✓";color:var(--orange);font-family:Arial}
+.action-row{display:flex;justify-content:center;align-items:center;gap:12px;margin:30px auto 8px;flex-wrap:wrap}
+.primary{
+  border:0;background:var(--orange);color:#fff9eb;border-radius:99px;
+  padding:14px 28px;font-size:14px;font-weight:900;letter-spacing:.1em;
+  box-shadow:0 5px 0 var(--orange-dark);transition:transform .12s,box-shadow .12s;
+}
+.primary:hover{transform:translateY(-2px);box-shadow:0 7px 0 var(--orange-dark)}
+.primary:active{transform:translateY(3px);box-shadow:0 2px 0 var(--orange-dark)}
+.primary:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:0 5px 0 var(--orange-dark)}
+.secondary{border:1px solid var(--green);background:transparent;color:var(--green);border-radius:99px;padding:12px 20px;font-weight:800;font-size:13px}
+.hint{text-align:center;color:var(--muted);font-size:11px;margin-top:17px}
+.machine-layout{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:34px;align-items:center;max-width:900px;margin:0 auto}
+.machine-wrap{display:flex;justify-content:center;align-items:center;padding:8px}
+.machine{
+  width:min(100%,470px);min-height:470px;background:var(--orange);border:5px solid var(--green);
+  border-radius:46px 46px 25px 25px;padding:22px 24px 18px;position:relative;
+  box-shadow:9px 11px 0 rgba(41,75,60,.18),inset 0 0 0 3px rgba(255,249,235,.28);
+}
+.machine:before{content:"";position:absolute;left:17px;right:17px;top:11px;height:9px;border-radius:10px;background:#f3a17c}
+.machine-title{text-align:center;color:#fff4dd;font-family:Georgia,serif;font-size:17px;letter-spacing:.15em;margin:4px 0 15px}
+.machine-window{height:235px;border:5px solid var(--green);border-radius:18px;background:var(--paper);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.machine-window:before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.5),transparent 45%)}
+.window-sun{position:absolute;width:150px;height:150px;border-radius:50%;background:#f3dfb5;right:-25px;top:-45px}
+.window-land{position:absolute;width:120%;height:95px;bottom:-42px;left:-10%;border-radius:50%;background:#b6b98b;transform:rotate(-8deg)}
+.ticket-preview{position:relative;z-index:2;background:#fff9eb;border:1px solid #cdbf9f;padding:17px 22px;text-align:center;box-shadow:4px 5px 0 rgba(41,75,60,.12);transform:rotate(-3deg);transition:transform .3s}
+.ticket-preview .tiny{font-size:9px;letter-spacing:.2em;color:var(--orange);font-weight:900}
+.ticket-preview strong{display:block;font-family:Georgia,serif;font-size:22px;color:var(--green);margin:8px 0}
+.ticket-preview span:last-child{font-size:10px;color:var(--muted)}
+.machine.is-pulling .ticket-preview{animation:ticketRise 1.25s cubic-bezier(.2,.8,.2,1)}
+@keyframes ticketRise{0%{transform:translateY(90px) rotate(8deg);opacity:0}55%{transform:translateY(-14px) rotate(-5deg);opacity:1}78%{transform:translateY(5px) rotate(3deg)}100%{transform:translateY(0) rotate(-3deg)}}
+.machine-controls{display:flex;align-items:center;justify-content:space-between;padding:17px 6px 0;gap:12px}
+.slot{height:13px;width:120px;background:#743d30;border:2px solid #f7c09d;border-radius:99px;box-shadow:inset 0 2px 4px #40271f}
+.lever{width:68px;height:68px;border-radius:50%;border:4px solid var(--green);background:var(--yellow);position:relative;box-shadow:0 4px 0 #98713a;transition:transform .15s}
+.lever:before{content:"";position:absolute;width:9px;height:34px;background:var(--green);left:25px;top:-27px;border-radius:8px;transform:rotate(-18deg);transform-origin:bottom}
+.lever:after{content:"";position:absolute;width:21px;height:21px;background:var(--orange);border:3px solid var(--green);border-radius:50%;left:18px;top:17px}
+.lever:active{transform:rotate(-24deg)}
+.machine-foot{height:13px;background:var(--green);border-radius:0 0 10px 10px;margin:16px 8px 0}
+.machine-side{text-align:left}
+.step-tag{font-size:10px;color:var(--orange);letter-spacing:.2em;font-weight:900}
+.machine-side h2{font-family:Georgia,"Noto Serif TC",serif;font-size:27px;color:var(--green);line-height:1.3;margin:9px 0}
+.machine-side p{font-size:13px;color:#6d6a59;line-height:1.9}
+.chosen-path{display:inline-block;background:#e9dfc7;color:var(--green);padding:7px 12px;border-radius:99px;font-size:11px;font-weight:900;margin:5px 0 16px}
+.pull-button{width:100%;margin:12px 0 10px}
+.small-note{font-size:11px!important;color:var(--muted)!important}
+.result-area{max-width:720px;margin:0 auto;text-align:center}
+.ticket{
+  position:relative;background:var(--paper);border:1px solid #cdbf9f;
+  max-width:540px;margin:18px auto 24px;padding:34px 38px 30px;
+  box-shadow:8px 9px 0 rgba(41,75,60,.13);transform:rotate(-.7deg);
+}
+.ticket:before,.ticket:after{content:"";position:absolute;top:50%;width:25px;height:25px;border-radius:50%;background:var(--cream);border:1px solid var(--line);transform:translateY(-50%)}
+.ticket:before{left:-13px}.ticket:after{right:-13px}
+.ticket-top{display:flex;justify-content:space-between;gap:12px;border-bottom:1px dashed var(--line);padding-bottom:13px;color:var(--orange);font-size:10px;font-weight:900;letter-spacing:.15em}
+.ticket-stamp{width:82px;height:82px;border:2px solid var(--orange);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--orange);font-family:Georgia,serif;font-size:12px;transform:rotate(12deg);margin:18px auto 8px}
+.ticket h2{font-family:Georgia,"Noto Serif TC",serif;font-size:clamp(27px,5vw,39px);color:var(--green);margin:10px 0}
+.ticket .world-line{font-size:13px;color:var(--orange);font-weight:900;letter-spacing:.08em}
+.ticket .story{font-family:Georgia,"Noto Serif TC",serif;font-size:16px;line-height:2;color:#5f5a4c;margin:20px auto;max-width:410px}
+.ticket .detail{font-size:12px;line-height:1.9;color:var(--muted);border-top:1px dashed var(--line);padding-top:14px}
+.ticket-code{font-size:10px;letter-spacing:.25em;color:#9a8e76;margin-top:18px}
+.saved-title{font-family:Georgia,serif;color:var(--green);font-size:22px;margin:34px 0 15px}
+.saved-list{max-width:720px;margin:0 auto;text-align:left}
+.saved-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 4px;border-bottom:1px solid var(--line)}
+.saved-item strong{display:block;color:var(--green);font-family:Georgia,serif;font-size:17px}
+.saved-item span{font-size:11px;color:var(--muted)}
+.saved-item button{border:0;background:transparent;color:var(--orange);font-size:12px;font-weight:900;padding:8px}
+.empty{font-size:12px;color:var(--muted);padding:14px 0}
+.toast{
+  position:fixed;z-index:10;left:50%;bottom:25px;transform:translate(-50%,20px);
+  background:var(--green);color:var(--paper);padding:12px 19px;border-radius:99px;
+  font-size:12px;box-shadow:0 5px 18px var(--shadow);opacity:0;pointer-events:none;transition:.25s;
+  max-width:calc(100% - 32px);text-align:center;
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.footer{display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1px solid var(--line);margin-top:48px;padding-top:15px;color:#93876f;font-size:10px;letter-spacing:.08em}
+.footer-mark{font-family:Georgia,serif;font-style:italic;color:var(--green)}
+@media(max-width:720px){
+ .page{padding:18px 18px 36px}.hero{margin:24px auto}
+ .path-options{grid-template-columns:1fr;gap:12px;max-width:420px}
+ .path-option{display:grid;grid-template-columns:112px 1fr;align-items:center;column-gap:15px}
+ .path-art{height:108px;border-radius:55px 12px 12px 55px;grid-row:span 2}
+ .path-art svg{width:76px;height:76px}.path-art:after{width:90px;height:90px}
+ .path-name{margin:0 0 4px;font-size:19px}.path-desc{margin:0}
+ .path-number{right:auto;left:10px;top:8px}
+ .machine-layout{grid-template-columns:1fr;gap:20px}
+ .machine-wrap{padding:0}.machine{max-width:410px;min-height:420px;padding:20px}
+ .machine-window{height:205px}.machine-side{text-align:center;max-width:440px;margin:auto}
+ .machine-side h2{font-size:24px}.pull-button{max-width:320px}
+ .ticket{padding:27px 23px}.footer{margin-top:35px}
+}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="topbar">
+    <div class="brand">P A R A L L E L　L I F E</div>
+    <div class="top-actions">
+      <button class="sound-toggle" id="soundToggle" aria-pressed="false" type="button">♫ 音效：關</button>
+      <button class="text-button" id="collectionTop" type="button">我的收藏 <span id="savedCount">0</span></button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="eyebrow">A LITTLE MACHINE FOR WHAT-IF</div>
+      <h1>平行人生販賣機</h1>
+      <div class="subtitle">另一種人生，正在等待領取。</div>
+      <p class="hero-note">如果那一天，你做了不同的選擇，現在會在哪裡？<br>投下一點好奇心，抽出一張來自平行世界的人生票券。</p>
+    </section>
+
+    <section class="screen active" id="chooseScreen">
+      <div class="section-heading">
+        <h2>今天想看看哪一種人生？</h2>
+        <p>選一個方向，讓命運替你轉個彎。</p>
+      </div>
+      <div class="path-options" id="pathOptions">
+        <button class="path-option" data-path="冒險" type="button">
+          <span class="path-art">
+            <svg viewBox="0 0 120 120" fill="none" aria-hidden="true"><path d="M19 91 49 32l17 34 13-21 24 46H19Z" fill="#789078"/><path d="m37 91 25-43 25 43H37Z" fill="#456451"/><path d="m48 34 9 16-9-4-8 6 8-18Z" fill="#fff1d4"/><circle cx="87" cy="29" r="11" fill="#e8bd68"/><path d="M20 99h82" stroke="#294b3c" stroke-width="3" stroke-linecap="round"/></svg>
+          </span><span class="path-number">01 / GO</span><span class="path-name">冒險出走</span><span class="path-desc">離開熟悉的地方，去看看世界會帶你去哪。</span>
+        </button>
+        <button class="path-option" data-path="日常" type="button">
+          <span class="path-art">
+            <svg viewBox="0 0 120 120" fill="none" aria-hidden="true"><path d="M24 54 60 25l36 29v39H24V54Z" fill="#d85b3f"/><path d="M18 56 60 20l42 36" stroke="#294b3c" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><rect x="48" y="66" width="24" height="27" rx="2" fill="#fff1d4"/><rect x="29" y="60" width="13" height="13" rx="2" fill="#f1d59c"/><rect x="78" y="60" width="13" height="13" rx="2" fill="#f1d59c"/><path d="M60 93v-13" stroke="#294b3c" stroke-width="2"/></svg>
+          </span><span class="path-number">02 / STAY</span><span class="path-name">平凡日常</span><span class="path-desc">把生活過成喜歡的樣子，發現小小的幸福。</span>
+        </button>
+        <button class="path-option" data-path="夢想" type="button">
+          <span class="path-art">
+            <svg viewBox="0 0 120 120" fill="none" aria-hidden="true"><path d="M60 14 70 45l32 1-25 19 9 31-26-18-26 18 9-31-25-19 32-1 10-31Z" fill="#e8bd68" stroke="#294b3c" stroke-width="3" stroke-linejoin="round"/><circle cx="60" cy="58" r="10" fill="#d85b3f"/><path d="M17 25h9M21.5 20.5v9M94 19h8M98 15v8" stroke="#456451" stroke-width="3" stroke-linecap="round"/></svg>
+          </span><span class="path-number">03 / DREAM</span><span class="path-name">夢想成真</span><span class="path-desc">試著走向心裡那個一直想成為的自己。</span>
+        </button>
+      </div>
+      <div class="action-row"><button class="primary" id="toMachine" type="button" disabled>前往販賣機　→</button></div>
+      <div class="hint">每一次選擇，都會通往不同的可能。</div>
+    </section>
+
+    <section class="screen" id="machineScreen">
+      <div class="section-heading">
+        <h2>請投幣，領取另一種人生</h2>
+        <p>握住把手，看看這次會掉出什麼可能。</p>
+      </div>
+      <div class="machine-layout">
+        <div class="machine-wrap">
+          <div class="machine" id="machine">
+            <div class="machine-title">PARALLEL LIFE · 24H</div>
+            <div class="machine-window">
+              <div class="window-sun"></div><div class="window-land"></div>
+              <div class="ticket-preview"><span class="tiny">YOUR OTHER LIFE</span><strong>?</strong><span>一張未知的入場券</span></div>
+            </div>
+            <div class="machine-controls">
+              <div><div class="slot"></div><div style="font-size:9px;color:#fff0d6;margin-top:6px;letter-spacing:.12em">INSERT A COIN</div></div>
+              <button class="lever" id="lever" type="button" aria-label="拉下販賣機把手"></button>
+            </div>
+            <div class="machine-foot"></div>
+          </div>
+        </div>
+        <div class="machine-side">
+          <div class="step-tag">YOUR SELECTED ROUTE</div>
+          <h2>讓另一個你，<br>替你活一次。</h2>
+          <span class="chosen-path" id="chosenPathLabel">尚未選擇</span>
+          <p>這台販賣機不販售飲料，只收藏那些「如果當初……」的可能。拉下把手，命運就會替你抽出一張人生票券。</p>
+          <button class="primary pull-button" id="pullButton" type="button">拉下把手・抽取人生</button>
+          <button class="secondary" id="backChoose" type="button">← 重新選擇方向</button>
+          <p class="small-note">小提醒：每次抽取都是全新的平行人生。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="resultScreen">
+      <div class="section-heading">
+        <h2>叮！你的平行人生已送達</h2>
+        <p>這是另一個你，正在經歷的日常。</p>
+      </div>
+      <div class="result-area">
+        <article class="ticket" id="ticket">
+          <div class="ticket-top"><span>PARALLEL LIFE TICKET</span><span id="ticketNumber">NO. 0001</span></div>
+          <div class="ticket-stamp">另一個<br>可能</div>
+          <div class="world-line" id="resultCategory">平行人生・冒險</div>
+          <h2 id="resultTitle">在海邊開一間書店</h2>
+          <p class="story" id="resultStory">你住在有海風的城市，每天替書頁留下鹹鹹的氣味。</p>
+          <p class="detail" id="resultDetail">早晨整理書架，午後聽浪，傍晚和熟客分享今天讀到的句子。</p>
+          <div class="ticket-code">KEEP THIS LITTLE POSSIBILITY</div>
+        </article>
+        <div class="action-row">
+          <button class="primary" id="saveTicket" type="button">♡ 收藏這張票券</button>
+          <button class="secondary" id="drawAgain" type="button">再抽一次</button>
+          <button class="secondary" id="startOver" type="button">重新開始</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="collectionScreen">
+      <div class="section-heading">
+        <h2>我的平行人生收藏</h2>
+        <p>每張票券，都是一個曾經想像過的自己。</p>
+      </div>
+      <div class="saved-list" id="savedList"></div>
+      <div class="action-row"><button class="secondary" id="backFromCollection" type="button">← 回到販賣機</button></div>
+    </section>
+  </main>
+  <footer class="footer"><span>© PARALLEL LIFE VENDING MACHINE</span><span class="footer-mark">What if, what next?</span></footer>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+  "use strict";
+  const $ = (id) => document.getElementById(id);
+  const paths = {
+    "冒險": [
+      ["在山裡經營一間小旅店","你搬進被群山包圍的小鎮，替旅人留一盞燈。","每天醒來都能看見雲霧越過山頭。你不再趕時間，而是記得每個來訪者的故事。","旅店門口種著野花，偶爾有貓咪來借住。"],
+      ["成為環島旅行作家","你把生活裝進背包，沿著海岸線寫下每一段相遇。","你的房間沒有固定地址，筆記本裡卻收藏了好多人的人生。每到一個地方，就寄一張明信片給自己。","今天的目的地，是地圖上那個還沒去過的小點。"],
+      ["在海島開一間潛水店","你住在海風很鹹的小島，每天帶人認識海底世界。","清晨出海，午後修理裝備，傍晚看夕陽落進海平面。你學會用不同的速度生活。","你的窗邊總有曬不完的毛巾和陽光。"],
+      ["成為野生動物攝影師","你帶著相機走進森林，等待不被打擾的相遇。","有時一整天只拍到一張照片，但你開始懂得等待也是一種收穫。","相簿裡收藏著只有你看過的清晨。"]
+    ],
+    "日常": [
+      ["開一間巷口早餐店","你每天比城市早一點醒來，替熟悉的客人煎一顆蛋。","生活沒有戲劇性的轉折，卻有熱騰騰的早餐和記得你口味的人。你把平凡的日子過得很踏實。","店門口的風鈴，每天早上七點準時響起。"],
+      ["成為社區裡的花店老闆","你把一間小店整理得明亮，讓花陪伴每個人的重要日子。","你記得誰喜歡向日葵，也知道哪種花適合道歉。日子在修剪枝葉與包裝紙聲中慢慢前進。","打烊前，總會留一束花給明天的自己。"],
+      ["住進有庭院的老房子","你養了幾盆植物，學會修理家具，也學會慢慢生活。","週末整理院子、煮一鍋湯，偶爾邀朋友來家裡坐坐。你發現，喜歡的生活不一定需要很大。","午後陽光會落在木地板的同一個位置。"],
+      ["成為獨立咖啡館店員","你在熟悉的街角工作，替每個人記住一杯咖啡的溫度。","你認識了附近的居民，也開始收集客人留下的故事。生活有自己的節奏，不急著抵達哪裡。","窗邊的位置，總有人帶著一本讀到一半的書。"]
+    ],
+    "夢想": [
+      ["出版自己的繪本","你把腦海裡的角色畫出來，讓它們陪伴更多人的童年。","從第一張草稿到書架上的成品，你終於把想像變成摸得到的東西。原來那些小小的念頭，也值得被看見。","新書發表那天，你在扉頁寫下給自己的話。"],
+      ["成為舞台上的音樂人","你開始在小場地演出，慢慢找到屬於自己的聲音。","掌聲不一定每次都很大，但你終於能把心裡的旋律分享出去。每一場演出，都讓你更靠近自己。","演出結束後，你把第一張票根收進盒子。"],
+      ["設計一座讓人迷路的展覽","你用空間、光線和故事，創造一個讓人願意停留的地方。","觀眾在作品裡找到自己的解讀，而你也從他們的反應中，看見設計更多的可能。","展場最後一盞燈熄滅時，你還捨不得離開。"],
+      ["創立自己的工作室","你和夥伴把喜歡的事變成工作，從一張桌子開始慢慢累積。","過程並不總是順利，但每次完成作品，都讓你更確定這條路是自己選的。","牆上貼滿草圖、便條紙和第一張名片。"]
+    ]
+  };
+
+  let selectedPath = "";
+  let currentTicket = null;
+  let soundOn = false;
+  let audioContext = null;
+  let toastTimer = null;
+  const STORAGE_KEY = "parallelLifeTickets_v1";
+
+  function getSaved(){
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); }
+    catch(e){ return []; }
+  }
+  function setSaved(items){
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(items)); }
+    catch(e){ showToast("瀏覽器未能儲存，請檢查儲存空間設定。"); }
+    updateSavedCount();
+  }
+  function updateSavedCount(){ $("savedCount").textContent = getSaved().length; }
+  function showToast(message){
+    const el = $("toast"); el.textContent = message; el.classList.add("show");
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove("show"), 2300);
+  }
+  function showScreen(name){
+    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+    $(name).classList.add("active");
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+  function playTone(freq=520,duration=.09,type="sine"){
+    if(!soundOn) return;
+    try{
+      audioContext = audioContext || new (window.AudioContext || window.webkitAudioContext)();
+      if(audioContext.state === "suspended") audioContext.resume();
+      const osc = audioContext.createOscillator(), gain = audioContext.createGain();
+      osc.type = type; osc.frequency.value = freq;
+      gain.gain.setValueAtTime(.0001,audioContext.currentTime);
+      gain.gain.exponentialRampToValueAtTime(.12,audioContext.currentTime+.015);
+      gain.gain.exponentialRampToValueAtTime(.0001,audioContext.currentTime+duration);
+      osc.connect(gain); gain.connect(audioContext.destination);
+      osc.start(); osc.stop(audioContext.currentTime+duration+.02);
+    }catch(e){ /* 音效不可用時不影響遊戲 */ }
+  }
+  function selectPath(path){
+    selectedPath = path;
+    document.querySelectorAll(".path-option").forEach(btn => {
+      const active = btn.dataset.path === path;
+      btn.classList.toggle("selected",active);
+      btn.setAttribute("aria-pressed",String(active));
+    });
+    $("toMachine").disabled = false;
+    playTone(620,.07);
+  }
+  function makeTicket(){
+    const pool = paths[selectedPath];
+    const item = pool[Math.floor(Math.random()*pool.length)];
+    const serial = String(Date.now()).slice(-6);
+    return {id:serial+"-"+Math.random().toString(36).slice(2,6),serial,path:selectedPath,title:item[0],story:item[1],detail:item[2],extra:item[3],createdAt:new Date().toLocaleDateString("zh-TW")};
+  }
+  function renderTicket(ticket){
+    currentTicket = ticket;
+    $("ticketNumber").textContent = "NO. "+ticket.serial;
+    $("resultCategory").textContent = "平行人生・"+ticket.path;
+    $("resultTitle").textContent = ticket.title;
+    $("resultStory").textContent = ticket.story;
+    $("resultDetail").textContent = ticket.detail+" "+ticket.extra;
+    $("saveTicket").textContent = getSaved().some(x=>x.id===ticket.id) ? "✓ 已收藏這張票券" : "♡ 收藏這張票券";
+    $("saveTicket").disabled = getSaved().some(x=>x.id===ticket.id);
+  }
+  let pulling = false;
+  function pullTicket(){
+    if(pulling) return;
+    if(!selectedPath){showToast("先選擇一種人生方向吧！");return;}
+    pulling = true;
+    $("pullButton").disabled = true; $("lever").disabled = true;
+    const machine = $("machine");
+    machine.classList.remove("is-pulling"); void machine.offsetWidth; machine.classList.add("is-pulling");
+    playTone(180,.18,"triangle");
+    setTimeout(()=>playTone(340,.16,"triangle"),230);
+    setTimeout(()=>playTone(680,.24,"sine"),570);
+    setTimeout(()=>{
+      const ticket = makeTicket(); renderTicket(ticket);
+      machine.classList.remove("is-pulling");
+      $("pullButton").disabled = false; $("lever").disabled = false;
+      pulling = false; showScreen("resultScreen"); showToast("票券已送達，看看另一個你吧！");
+    },1350);
+  }
+  function saveCurrent(){
+    if(!currentTicket) return;
+    const saved = getSaved();
+    if(saved.some(x=>x.id===currentTicket.id)){showToast("這張票券已經在收藏裡了。");return;}
+    saved.unshift(currentTicket); setSaved(saved); renderTicket(currentTicket);
+    playTone(760,.12); showToast("收藏成功！這個可能被你留下了。");
+  }
+  function renderCollection(){
+    const list = $("savedList"), saved = getSaved();
+    list.innerHTML = "";
+    if(!saved.length){
+      const p = document.createElement("p"); p.className="empty"; p.textContent="目前還沒有收藏的票券。去販賣機抽一張，留下你喜歡的可能吧！"; list.appendChild(p); return;
+    }
+    saved.forEach(ticket=>{
+      const row = document.createElement("div"); row.className="saved-item";
+      const info = document.createElement("div");
+      const strong = document.createElement("strong"); strong.textContent=ticket.title;
+      const small = document.createElement("span"); small.textContent="平行人生・"+ticket.path+"　／　"+ticket.createdAt;
+      info.append(strong,small);
+      const actions = document.createElement("div");
+      const view = document.createElement("button"); view.type="button"; view.textContent="查看票券";
+      view.addEventListener("click",()=>{renderTicket(ticket);showScreen("resultScreen");});
+      const remove = document.createElement("button"); remove.type="button"; remove.textContent="移除";
+      remove.addEventListener("click",()=>{
+        setSaved(getSaved().filter(x=>x.id!==ticket.id)); renderCollection(); showToast("已從收藏中移除。");
+      });
+      actions.append(view,remove); row.append(info,actions); list.appendChild(row);
+    });
+  }
+
+  document.querySelectorAll(".path-option").forEach(btn=>btn.addEventListener("click",()=>selectPath(btn.dataset.path)));
+  $("toMachine").addEventListener("click",()=>{
+    if(!selectedPath)return;
+    $("chosenPathLabel").textContent="已選擇："+selectedPath;
+    showScreen("machineScreen"); playTone(500,.08);
+  });
+  $("pullButton").addEventListener("click",pullTicket);
+  $("lever").addEventListener("click",pullTicket);
+  $("backChoose").addEventListener("click",()=>showScreen("chooseScreen"));
+  $("saveTicket").addEventListener("click",saveCurrent);
+  $("drawAgain").addEventListener("click",()=>{showScreen("machineScreen");pullTicket();});
+  $("startOver").addEventListener("click",()=>{
+    selectedPath="";currentTicket=null;
+    document.querySelectorAll(".path-option").forEach(b=>{b.classList.remove("selected");b.setAttribute("aria-pressed","false");});
+    $("toMachine").disabled=true;showScreen("chooseScreen");showToast("新的可能，從選擇開始。");
+  });
+  $("collectionTop").addEventListener("click",()=>{renderCollection();showScreen("collectionScreen");});
+  $("backFromCollection").addEventListener("click",()=>showScreen(currentTicket?"resultScreen":"chooseScreen"));
+  $("soundToggle").addEventListener("click",()=>{
+    soundOn=!soundOn;
+    $("soundToggle").textContent=soundOn?"♫ 音效：開":"♫ 音效：關";
+    $("soundToggle").setAttribute("aria-pressed",String(soundOn));
+    if(soundOn)playTone(660,.1);
+    showToast(soundOn?"音效已開啟。":"音效已關閉。");
+  });
+  updateSavedCount();
+  document.querySelectorAll(".path-option").forEach(b=>b.setAttribute("aria-pressed","false"));
+})();
+</script>
+</body>
+</html>
